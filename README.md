@@ -1,5 +1,4 @@
-# A simple CRUD operations microservices built using FastAPI.
-
+# A simple CRUD operations microservices built using FastAPI
 
 This is created to demo how to  
     - Unit test
@@ -8,7 +7,44 @@ microservices
 
 ## How to install the project locally
 
-The project dependencies are maintained by poetry, so install poetry: https://python-poetry.org/docs/
+The project dependencies are maintained by poetry, so install [poetry](https://python-poetry.org/docs/)
+
+### STEP 1 : Clone the repo
+
+```shell
+
+git clone https://github.com/dhanasekars/simple-crud-microservices.git 
+
+
+```
+
+#### STEP 2: Install Poetry
+
+```shell
+
+curl -sSL https://install.python-poetry.org | python3 -
+
+```
+
+#### STEP 3: Install dependencies using Poetry
+
+```shell
+
+poetry install
+
+```
+
+#### STEP 4: Run the microservices server  
+
+``` shell
+
+poetry run python main.py
+
+```
+
+This will run server at [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+Look at to understand the endpoints [docs](http://127.0.0.1:8000/docs)
 
 or  
 
