@@ -10,17 +10,9 @@ microservices
 
 The project dependencies are maintained by poetry, so install poetry https://python-poetry.org/docs/
 
-STEP 1 : Install poerty  
+or  
 
-```shell
+You can use the requirements.txt present in the project.  
 
-curl -sSL https://install.python-poetry.org | python3 -
-
-```
-
-STEP 2 : create a virtual environment & exit
-
-```shell
-poetry shell
-poetry exit
-```
+> :warning: **If you are using requirements.txt**: It may not get updated reqularly.  
+cle
