@@ -52,8 +52,7 @@ You can use the requirements.txt present in the project.
 
 > :warning: **If you are using requirements.txt**: It may not get updated reqularly.  
 
+## Docker  
 
-## Docker 
-
-You can run Docker file to create a container. 
+You can run Docker file to create a container.  
 > :warning: **Do port mapping to <your_prefered_port>:8000**.  
