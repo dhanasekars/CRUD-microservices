@@ -211,3 +211,4 @@ pyrightconfig.json
 /data.json
 .coveragerc
 app/log/*.* 
+.vscode
