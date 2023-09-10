@@ -9,7 +9,7 @@ microservices
 
 The project dependencies are maintained by poetry, so install [poetry](https://python-poetry.org/docs/)
 
-### STEP 1 : Clone the repo
+### STEP 1: Clone the repo
 
 ```shell
 
@@ -42,9 +42,9 @@ poetry run python main.py
 
 ```
 
-This will run server at [http://127.0.0.1:8000](http://127.0.0.1:8000)
+This will run the server at [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-Look at to understand the endpoints [docs](http://127.0.0.1:8000/docs)
+Look at  [docs](http://127.0.0.1:8000/docs) to understand the endpoints.
 
 or  
 
@@ -54,5 +54,5 @@ You can use the requirements.txt present in the project.
 
 ## Docker  
 
-You can run Docker file to create a container.  
+You can run the Docker file to create a container.  
 > :warning: **Do port mapping to <your_prefered_port>:8000**.  
