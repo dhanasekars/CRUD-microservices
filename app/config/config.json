@@ -1,5 +1,5 @@
 {
-  "data_file": "./app/data/todo.json",
+  "data_file": "./app/data/data.json",
   "logging_config": {
     "filename": "./app/log/debug.log",
     "level":"DEBUG",
