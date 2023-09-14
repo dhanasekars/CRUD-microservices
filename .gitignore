@@ -210,5 +210,7 @@ pyrightconfig.json
 # End of https://www.toptal.com/developers/gitignore/api/python,macos
 /data.json
 .coveragerc
-app/log/*.* 
+ 
 .vscode
+debug.log
+```
