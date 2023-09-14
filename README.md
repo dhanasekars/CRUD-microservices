@@ -16,19 +16,22 @@ The project dependencies are maintained by poetry, so install [poetry](https://p
 git clone https://github.com/dhanasekars/simple-crud-microservices.git 
 ```
 
-#### STEP 2: Install Poetry
+#### STEP 2: 
+Navigate to your project directory using the 'cd' command.
+
+#### STEP 3: Install Poetry
 
 ```shell
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 
-#### STEP 3: Install dependencies using Poetry
+#### STEP 4: Install dependencies using Poetry
 
 ```shell
 poetry install
 ```
 
-#### STEP 4: Run the microservices server  
+#### STEP 5: Run the microservices server  
 
 ``` shell
 poetry run python main.py
@@ -36,7 +39,7 @@ poetry run python main.py
 
 This will run the server at [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-Look at swagger file [docs](http://127.0.0.1:8000/docs) to understand the endpoints.
+To understand the endpoints, look at the swagger file [docs](http://127.0.0.1:8000/docs).
 
 or  
 
