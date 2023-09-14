@@ -16,7 +16,8 @@ The project dependencies are maintained by poetry, so install [poetry](https://p
 git clone https://github.com/dhanasekars/simple-crud-microservices.git 
 ```
 
-#### STEP 2: 
+#### STEP 2  
+
 Navigate to your project directory using the 'cd' command.
 
 #### STEP 3: Install Poetry
