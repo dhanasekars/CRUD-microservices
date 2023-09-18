@@ -23,38 +23,41 @@ from app.utils.config_manager import config_manager
 # ------------------------test setup ----------------------------------#
 # Mock functions for load_list and save_list
 def mock_load_list():
+    """mock data"""
     return [{"id": 1, "task": "Task 1"}, {"id": 2, "task": "Task 2"}]
 
 
 def mock_save_list(data):
+    """mock save list"""
     mock_save_list.updated_data = data
 
 
 class TestLoadListFromJSON(unittest.TestCase):
-    # Test case - Loading a list from a valid JSON file
     @patch("builtins.open", new_callable=mock_open, read_data="[1, 2, 3, 4, 5]")
     def test_load_list_from_json_valid(self, mock_file_open):
+        """Test case - Loading a list from a valid JSON file"""
         self.assertEqual(load_list(), [1, 2, 3, 4, 5])
 
-    # Test case: Return an empty list from a non-existent file
     @patch("builtins.open", side_effect=FileNotFoundError("file not found"))
     def test_load_list_from_json_nonexistent_file(self, mock_file_open):
+        """  Test case: Return an empty list from a non-existent file"""
         self.assertEqual(load_list(), [])
 
-    # Test case: JSONDecodeError raised for a non-JSON format
     @patch(
         "json.loads",
         side_effect=json.JSONDecodeError("Expecting value.", "Test.", 0),
     )
     @patch("builtins.open", new_callable=mock_open, read_data="[1, 2, 3, 4, 5]")
+    
     def test_json_decode_error(self, mock_file_open, mock_json_loads):
+        """Test case: JSONDecodeError raised for a non-JSON format file"""
         self.assertEqual(load_list().msg, "Expecting value.")
         self.assertEqual(load_list().doc, "Test.")
 
 
 @patch("app.utils.helper.load_list")
 class TestGetTodoDetails(unittest.TestCase):
-    """create test class that inherits from unitest.Testcase to test Get Todo Details helper function"""
+    """Testcase to test Get Todo Details helper function"""
 
     def test_valid_todo_id(self, mock_load_list):
         mock_data = [{"id": 1, "task": "Task 1", "status": "Incomplete"}]
@@ -88,7 +91,7 @@ class TestGetTodoDetails(unittest.TestCase):
 
 
 class TestSaveList(unittest.TestCase):
-    """create test class that inherits from unitest.Testcase to test Get save list helper function"""
+    """Testcase to test Get save list helper function"""
 
     @patch("builtins.open", new_callable=mock_open)
     def test_save_list_success(self, mock_file):

@@ -9,6 +9,7 @@ import logging
 
 
 class ConfigurationManager:
+    """Singleton class to manage configuration data"""
     config_data: object
     _instance = None  # Private class variable to store the singleton instance
 
@@ -42,7 +43,7 @@ class ConfigurationManager:
             )
 
         try:
-            with open(config_file_path, "r") as config_file:
+            with open(config_file_path, "r",encoding="UTF8") as config_file:
                 self.config_data = json.load(config_file)
         except FileNotFoundError:
             raise FileNotFoundError("Config file not found.")
