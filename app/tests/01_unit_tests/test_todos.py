@@ -2,11 +2,11 @@
 Created on : 02/09/23 11:49 am
 @author : ds  
 """
+from unittest.mock import patch
+from unittest.mock import MagicMock
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import MagicMock
 from fastapi import HTTPException
-from unittest.mock import patch
 
 from app.apis import todos
 from main import app  # Import your FastAPI app instance

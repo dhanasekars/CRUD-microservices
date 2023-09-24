@@ -4,12 +4,10 @@ Created on : 04/09/23 1:08 pm
 """
 
 from multiprocessing import Process
+import re
 import pytest
 from fastapi.testclient import TestClient
 from main import app
-import re
-
-# from hypothesis import given, strategies as st
 
 client = TestClient(app)
 
@@ -19,48 +17,51 @@ payload = {
     "description": "This is created using automated Integration tests.",
 }
 
-
 def start_app():
     import uvicorn
 
     uvicorn.run(app, host="127.0.0.1", port=8001)
 
+@pytest.fixture(scope="module", autouse=True)
+def setup_teardown_app(request):
+    app_process = Process(target=start_app)
+    app_process.start()
+    yield client
+
+    app_process.terminate()
+    app_process.join()
+    
+@pytest.fixture(scope="module", autouse=True)
+def generated_uuid():
+    """ create a todo item and capture the generated UUID"""
+    response = client.post("/todos", json=payload)
+    assert response.status_code == 200
+    todo_data = response.json()
+    generated_uuid = todo_data["id"]
+    assert todo_data["title"] == payload["title"]
+    assert todo_data["description"] == payload["description"]
+    assert todo_data["doneStatus"] is False
+    assert generated_uuid is not None
+    assert re.match(uuid_regex_pattern, generated_uuid)
+    assert len(generated_uuid) == 32
+
+    yield generated_uuid
+
 
 class TestTodo2xx:
-    @pytest.fixture(scope="module", autouse=True)
-    def setup_teardown_app(self, request):
-        app_process = Process(target=start_app)
-        app_process.start()
-        yield client
-
-        app_process.terminate()
-        app_process.join()
-
-    @pytest.fixture()
-    def generated_uuid(self):
-        # create a todo item and capture the generated UUID
-        response = client.post("/todos", json=payload)
-        assert response.status_code == 200
-        todo_data = response.json()
-        generated_uuid = todo_data["id"]
-        assert todo_data["title"] == payload["title"]
-        assert todo_data["description"] == payload["description"]
-        assert todo_data["doneStatus"] is False
-        assert generated_uuid is not None
-        assert re.match(uuid_regex_pattern, generated_uuid)
-        assert len(generated_uuid) == 32
-
-        yield generated_uuid
-
+    """Test class for 2xx status code"""
     def test_read_root(self):
+        """ Test case for root endpoint"""
         response = client.get("/")
         assert response.status_code == 200
         assert response.json() == {"message": "Welcome to API Challenge"}
 
     def test_create_todo_and_assert_response_details(self, generated_uuid):
+        """Test case for creating a todo item and assert the response details"""
         pass
 
     def test_get_todo_details_using_uuid(self, generated_uuid):
+        """Test case for getting a todo item using UUID"""
         response = client.get(f"/todos/{generated_uuid}")
         assert response.status_code == 200
         todo_data = response.json()
@@ -71,7 +72,8 @@ class TestTodo2xx:
         assert todo_data["doneStatus"] is False
 
     def test_get_todo_list(self, generated_uuid):
-        response = client.get(f"/todos")
+        """ Test case for getting a list of todo items"""
+        response = client.get("/todos")
         assert response.status_code == 200
         todo_data = response.json()
         response_length = len(todo_data)
@@ -84,7 +86,8 @@ class TestTodo2xx:
             assert response_length <= 5
 
     def test_per_page_and_page(self, generated_uuid):
-        response = client.get(f"todos?page=1&per_page=1")
+        """Test case for pagination with valid page and per_page"""
+        response = client.get("todos?page=1&per_page=1")
         assert response.status_code == 200
         todo_data = response.json()
         response_length = len(todo_data)
@@ -96,6 +99,7 @@ class TestTodo2xx:
         assert "doneStatus" in todo_data[0]
 
     def test_put_updating_a_todo(self, generated_uuid):
+        """ Test case for updating a todo item"""
         response = client.put(
             f"/todos/{generated_uuid}",
             json={
@@ -121,6 +125,7 @@ class TestTodo2xx:
         assert todo_data["doneStatus"] is True
 
     def test_delete_a_todo_item(self, generated_uuid):
+        """ Test case for deleting a todo item"""
         response = client.delete(f"/todos/{generated_uuid}")
         response_data = response.json()
         assert isinstance(response_data, dict)
@@ -129,33 +134,10 @@ class TestTodo2xx:
 
 
 class TestTodo4xx:
-    @pytest.fixture(scope="module", autouse=True)
-    def setup_teardown_app(self, request):
-        app_process = Process(target=start_app)
-        app_process.start()
-        yield client
-
-        app_process.terminate()
-        app_process.join()
-
-    @pytest.fixture()
-    def generated_uuid(self):
-        # create a todo item and capture the generated UUID
-        response = client.post("/todos", json=payload)
-        assert response.status_code == 200
-        todo_data = response.json()
-        generated_uuid = todo_data["id"]
-        assert todo_data["title"] == payload["title"]
-        assert todo_data["description"] == payload["description"]
-        assert todo_data["doneStatus"] is False
-        assert generated_uuid is not None
-        assert re.match(uuid_regex_pattern, generated_uuid)
-        assert len(generated_uuid) == 32
-
-        yield generated_uuid
-
+    """ Test class for 4xx status code"""
     def test_pagination_page_less_than_one(self, generated_uuid):
-        response = client.get(f"todos?page=0&per_page=1")
+        """ Test case for pagination with invalid page and per_page"""
+        response = client.get("todos?page=0&per_page=1")
         assert response.status_code == 400
         todo_data = response.json()
         assert isinstance(todo_data, dict)
@@ -163,7 +145,8 @@ class TestTodo4xx:
         assert todo_data["detail"] == "Page and per_page must be positive integer."
 
     def test_pagination_per_page_less_than_one(self, generated_uuid):
-        response = client.get(f"todos?page=1&per_page=0")
+        """ Test case for pagination with invalid page and per_page"""
+        response = client.get("todos?page=1&per_page=0")
         assert response.status_code == 400
         todo_data = response.json()
         assert isinstance(todo_data, dict)
@@ -171,7 +154,8 @@ class TestTodo4xx:
         assert todo_data["detail"] == "Page and per_page must be positive integer."
 
     def test_pagination_422(self, generated_uuid):
-        response = client.get(f"todos?page=notNumber&per_page=1")
+        """ Test case for pagination with invalid page and per_page"""
+        response = client.get("todos?page=notNumber&per_page=1")
         assert response.status_code == 422
         todo_data = response.json()
         assert isinstance(todo_data, dict)
@@ -182,7 +166,8 @@ class TestTodo4xx:
         )
 
     def test_get_invalid_todo(self):
-        response = client.get(f"/todos/aninvalidID123")
+        """ Test case for getting a todo with invalid ID"""
+        response = client.get("/todos/aninvalidID123")
         assert response.status_code == 404
         todo_data = response.json()
         print(todo_data)
@@ -191,8 +176,9 @@ class TestTodo4xx:
         assert todo_data["detail"] == "Todo not found for the given ID: aninvalidID123"
 
     def test_update_invalid_todo(self):
+        """ Test case for updating a todo with invalid ID"""
         response = client.put(
-            f"/todos/aninvalidID123", json={"title": "Update invalid id"}
+            "/todos/aninvalidID123", json={"title": "Update invalid id"}
         )
         assert response.status_code == 404
         todo_data = response.json()
@@ -202,7 +188,8 @@ class TestTodo4xx:
         assert todo_data["detail"] == "aninvalidID123 not found."
 
     def test_delete_invalid_todo(self):
-        response = client.delete(f"/todos/aninvalidID123")
+        """ Test case for deleting a todo with invalid ID"""
+        response = client.delete("/todos/aninvalidID123")
         assert response.status_code == 404
         todo_data = response.json()
         print(todo_data)
@@ -211,6 +198,7 @@ class TestTodo4xx:
         assert todo_data["detail"] == "ID not found"
 
     def test_update_with_blank_422(self, generated_uuid):
+        """ Test case for updating a todo with blank title"""
         response = client.put(
             f"/todos/{generated_uuid}",
             json={
@@ -236,33 +224,9 @@ class TestTodo4xx:
 
 
 class TestTodo5xx:
-    @pytest.fixture(scope="module", autouse=True)
-    def setup_teardown_app(self, request):
-        app_process = Process(target=start_app)
-        app_process.start()
-        yield client
-
-        app_process.terminate()
-        app_process.join()
-
-    @pytest.fixture()
-    def generated_uuid(self):
-        # create a todo item and capture the generated UUID
-        response = client.post("/todos", json=payload)
-        assert response.status_code == 200
-        todo_data = response.json()
-        generated_uuid = todo_data["id"]
-        assert todo_data["title"] == payload["title"]
-        assert todo_data["description"] == payload["description"]
-        assert todo_data["doneStatus"] is False
-        assert generated_uuid is not None
-        assert re.match(uuid_regex_pattern, generated_uuid)
-        assert len(generated_uuid) == 32
-
-        yield generated_uuid
-
+    """ Test class for 5xx status code"""
     def test_internal_server_error(self):
-        # Define a function to mock the route handler and raise an exception
+        """ Test case for internal server error"""
         def mock_route_handler(*args, **kwargs):
             raise Exception("Simulated internal server error")
 

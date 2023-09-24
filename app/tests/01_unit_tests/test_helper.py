@@ -48,7 +48,6 @@ class TestLoadListFromJSON(unittest.TestCase):
         side_effect=json.JSONDecodeError("Expecting value.", "Test.", 0),
     )
     @patch("builtins.open", new_callable=mock_open, read_data="[1, 2, 3, 4, 5]")
-    
     def test_json_decode_error(self, mock_file_open, mock_json_loads):
         """Test case: JSONDecodeError raised for a non-JSON format file"""
         self.assertEqual(load_list().msg, "Expecting value.")
@@ -92,7 +91,6 @@ class TestGetTodoDetails(unittest.TestCase):
 
 class TestSaveList(unittest.TestCase):
     """Testcase to test Get save list helper function"""
-
     @patch("builtins.open", new_callable=mock_open)
     def test_save_list_success(self, mock_file):
         todo_list = [
@@ -160,7 +158,6 @@ class TestSaveList(unittest.TestCase):
 @patch("app.utils.helper.save_list", side_effect=mock_save_list)
 class TestRemoveTodo(unittest.TestCase):
     """module to test Remove todo item"""
-
     def test_remove_existing_todo(self, mock_load, mock_save):
         with pytest.raises(HTTPException) as execinfo:
             remove_todo(1)
@@ -182,7 +179,6 @@ class TestRemoveTodo(unittest.TestCase):
 
 class TestGenerateID(unittest.TestCase):
     """module to test UUID generation and uniqueness"""
-
     def test_generate_id_length(self):
         # Generate an ID and check if it has the correct length
         generated_id = generate_id()

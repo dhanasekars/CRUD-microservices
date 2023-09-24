@@ -4,7 +4,7 @@ This is created to demo how to
 
 - Unit test
 - Integration test  
-microservices
+for microservices using pytest.
 
 ## How to install the project locally
 
@@ -52,3 +52,7 @@ You can use the requirements.txt present in the project.
 
 You can run the Docker file to create a container.  
 > :warning: **Do port mapping to <your_prefered_port>:8000**.  
+
+## Makefile
+
+You can make use of Makefile to run run tests and linting 
