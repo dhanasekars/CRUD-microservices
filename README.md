@@ -1,10 +1,14 @@
 # A simple CRUD operations microservices built using FastAPI
 
-This is created to demo how to  
+- The project can be used as an example to learn how to build a web API using FastAPI and PostgreSQL.
+- To learn how to write unit and integration tests for a web API.
+- As an Exploratory tester, understand what is covered in automated checks and do exploratory tests.
 
-- Unit test
-- Integration test  
-for microservices using pytest.
+## Technology stack
+- Python 3.8
+  - FastAPI
+  - Pytest
+  - Poetry
 
 ## How to install the project locally
 
